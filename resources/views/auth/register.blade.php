@@ -156,4 +156,3 @@
     @endpush
 
 </x-layouts.guest>
-Menampilkan register.blade.pphp.txt.
