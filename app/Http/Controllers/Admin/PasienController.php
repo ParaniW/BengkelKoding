@@ -11,7 +11,10 @@ class PasienController extends Controller
 {
     public function index()
     {
-        $pasiens = User::where('role', 'pasien')->with('poli')->get();
+        $pasiens = User::where('role', 'pasien')
+            ->latest()
+            ->get();
+
         return view('admin.pasien.index', compact('pasiens'));
     }
 
@@ -23,67 +26,103 @@ class PasienController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'no_ktp' => 'required|string|max:16|unique:users,no_ktp',
-            'no_hp' => 'required|string|max:15',
-            'email' => 'required|string|unique:users,email',
+            'nama'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'no_ktp'   => 'required|string|max:30|unique:users,no_ktp',
+            'alamat'   => 'required|string|max:255',
+            'no_hp'    => 'required|string|max:20',
             'password' => 'required|string|min:6',
+        ], [
+            'nama.required'     => 'Nama pasien wajib diisi.',
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'email.unique'      => 'Email sudah digunakan.',
+            'no_ktp.required'   => 'No. KTP wajib diisi.',
+            'no_ktp.unique'     => 'No. KTP sudah digunakan.',
+            'alamat.required'   => 'Alamat wajib diisi.',
+            'no_hp.required'    => 'No. HP wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min'      => 'Password minimal 6 karakter.',
         ]);
+
+        $lastPasien = User::where('role', 'pasien')
+            ->latest('id')
+            ->first();
+
+        $lastNumber = 0;
+
+        if ($lastPasien && $lastPasien->no_rm) {
+            $lastNumber = (int) preg_replace('/[^0-9]/', '', $lastPasien->no_rm);
+        }
+
+        $newNoRm = 'RM' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
 
         User::create([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'no_ktp' => $request->no_ktp,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
+            'nama'     => $request->nama,
+            'email'    => $request->email,
+            'no_ktp'   => $request->no_ktp,
+            'alamat'   => $request->alamat,
+            'no_hp'    => $request->no_hp,
+            'role'     => 'pasien',
+            'no_rm'    => $newNoRm,
             'password' => Hash::make($request->password),
-            'role' => 'pasien',
         ]);
 
-        return redirect()->route('pasien.index')->with('message', 'Data Pasien berhasil di Tambah')->with('type', 'success');
+        return redirect()
+            ->route('admin.pasien.index')
+            ->with('success', 'Data pasien berhasil ditambahkan.');
     }
 
-    public function edit(User $pasien)
+    public function edit(string $id)
     {
+        $pasien = User::where('role', 'pasien')
+            ->findOrFail($id);
+
         return view('admin.pasien.edit', compact('pasien'));
     }
 
-    public function update(Request $request, User $pasien)
+    public function update(Request $request, string $id)
     {
+        $pasien = User::where('role', 'pasien')
+            ->findOrFail($id);
+
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'no_ktp' => 'required|string|max:16|unique:users,no_ktp,' . $pasien->id,
-            'no_hp' => 'required|string|max:15',
-            'email' => 'required|string|unique:users,email,' . $pasien->id,
+            'nama'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $pasien->id,
+            'no_ktp'   => 'required|string|max:30|unique:users,no_ktp,' . $pasien->id,
+            'alamat'   => 'required|string|max:255',
+            'no_hp'    => 'required|string|max:20',
             'password' => 'nullable|string|min:6',
         ]);
 
-        $updateData = [
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
+        $data = [
+            'nama'   => $request->nama,
+            'email'  => $request->email,
             'no_ktp' => $request->no_ktp,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
+            'alamat' => $request->alamat,
+            'no_hp'  => $request->no_hp,
         ];
 
         if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $pasien->update($updateData);
+        $pasien->update($data);
 
-        return redirect()->route('pasien.index')
-            ->with('message', 'Data Pasien Berhasil di Update')
-            ->with('type', 'success');
+        return redirect()
+            ->route('admin.pasien.index')
+            ->with('success', 'Data pasien berhasil diperbarui.');
     }
 
-    public function destroy(User $pasien)
+    public function destroy(string $id)
     {
+        $pasien = User::where('role', 'pasien')
+            ->findOrFail($id);
+
         $pasien->delete();
-        return redirect()->route('pasien.index')
-            ->with('message', 'Data Pasien Berhasil Di Hapus')
-            ->with('type', 'success');
+
+        return redirect()
+            ->route('admin.pasien.index')
+            ->with('success', 'Data pasien berhasil dihapus.');
     }
 }

@@ -1,9 +1,9 @@
 <x-layouts.app title="Admin Dashboard">
 
     @php
-    \Carbon\Carbon::setLocale('id');
-    $today = \Carbon\Carbon::now()->translatedFormat('l, d F Y');
-@endphp
+        \Carbon\Carbon::setLocale('id');
+        $today = \Carbon\Carbon::now()->translatedFormat('l, d F Y');
+    @endphp
 
     {{-- Header --}}
     <div class="mb-6">
@@ -11,7 +11,7 @@
             Selamat Datang, Admin 👋
         </h1>
         <p class="text-slate-500 mt-1">
-            {{ $today }} 
+            {{ $today }} - Berikut ringkasan data sistem poliklinik.
         </p>
     </div>
 
@@ -24,7 +24,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
                     <i class="fas fa-hospital text-lg"></i>
                 </div>
-                <a href="{{ route('polis.index') }}" class="text-blue-500 text-sm font-semibold">
+                <a href="{{ route('admin.polis.index') }}" class="text-blue-500 text-sm font-semibold">
                     Lihat
                 </a>
             </div>
@@ -39,7 +39,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
                     <i class="fas fa-user-doctor text-lg"></i>
                 </div>
-                <a href="{{ route('dokter.index') }}" class="text-emerald-500 text-sm font-semibold">
+                <a href="{{ route('admin.dokter.index') }}" class="text-emerald-500 text-sm font-semibold">
                     Lihat
                 </a>
             </div>
@@ -54,7 +54,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
                     <i class="fas fa-bed-pulse text-lg"></i>
                 </div>
-                <a href="{{ route('pasien.index') }}" class="text-amber-500 text-sm font-semibold">
+                <a href="{{ route('admin.pasien.index') }}" class="text-amber-500 text-sm font-semibold">
                     Lihat
                 </a>
             </div>
@@ -69,7 +69,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center">
                     <i class="fas fa-pills text-lg"></i>
                 </div>
-                <a href="{{ route('obat.index') }}" class="text-pink-500 text-sm font-semibold">
+                <a href="{{ route('admin.obat.index') }}" class="text-pink-500 text-sm font-semibold">
                     Lihat
                 </a>
             </div>
@@ -87,7 +87,7 @@
         <div class="xl:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
             <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                 <h3 class="text-2xl font-semibold text-slate-800">Daftar Poli</h3>
-                <a href="{{ route('polis.index') }}" class="text-blue-600 font-semibold hover:underline">
+                <a href="{{ route('admin.polis.index') }}" class="text-blue-600 font-semibold hover:underline">
                     Lihat Semua →
                 </a>
             </div>
@@ -112,7 +112,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-sky-100 text-sky-600 text-sm font-medium">
-                                        Dokter
+                                        {{ $poli->dokters_count ?? 0 }} Dokter
                                     </span>
                                 </td>
                             </tr>
@@ -136,7 +136,7 @@
 
             <div class="p-5 space-y-4">
 
-                <a href="{{ route('polis.create') }}"
+                <a href="{{ route('admin.polis.create') }}"
                     class="flex items-start gap-4 p-4 rounded-2xl bg-blue-50 hover:bg-blue-100 transition">
                     <div class="text-blue-600 text-xl mt-1">
                         <i class="fas fa-plus"></i>
@@ -147,7 +147,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('dokter.create') }}"
+                <a href="{{ route('admin.dokter.create') }}"
                     class="flex items-start gap-4 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 transition">
                     <div class="text-emerald-600 text-xl mt-1">
                         <i class="fas fa-user-plus"></i>
@@ -158,7 +158,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('pasien.create') }}"
+                <a href="{{ route('admin.pasien.create') }}"
                     class="flex items-start gap-4 p-4 rounded-2xl bg-amber-50 hover:bg-amber-100 transition">
                     <div class="text-amber-600 text-xl mt-1">
                         <i class="fas fa-user-plus"></i>
@@ -169,7 +169,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('obat.create') }}"
+                <a href="{{ route('admin.obat.create') }}"
                     class="flex items-start gap-4 p-4 rounded-2xl bg-pink-50 hover:bg-pink-100 transition">
                     <div class="text-pink-600 text-xl mt-1">
                         <i class="fas fa-plus"></i>

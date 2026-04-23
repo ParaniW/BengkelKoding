@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class JadwalPeriksa extends Model
 {
+    use HasFactory;
+
     protected $table = 'jadwal_periksa';
 
     protected $fillable = [
@@ -13,6 +16,7 @@ class JadwalPeriksa extends Model
         'hari',
         'jam_mulai',
         'jam_selesai',
+        'current_antrian',
     ];
 
     public function dokter()
@@ -24,4 +28,4 @@ class JadwalPeriksa extends Model
     {
         return $this->hasMany(DaftarPoli::class, 'id_jadwal');
     }
-}
+}   

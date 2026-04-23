@@ -6,8 +6,8 @@
             Data Poli
         </h2>
 
-        <a href="{{ route('polis.create') }}" class="btn bg-[#2d4499] hover:bg-[#1e2d6b] 
-                  text-white border-none rounded-lg px-5">
+        <a href="{{ route('admin.polis.create') }}" 
+           class="btn bg-[#2d4499] hover:bg-[#1e2d6b] text-white border-none rounded-lg px-5">
             <i class="fas fa-plus"></i>
             Tambah Poli
         </a>
@@ -33,6 +33,7 @@
                         <tr>
                             <th class="px-6 py-4">Nama Poli</th>
                             <th class="px-6 py-4">Keterangan</th>
+                            <th class="px-6 py-4">Tarif</th> {{-- TAMBAHAN --}}
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -50,23 +51,28 @@
                                 {{ $poli->keterangan }}
                             </td>
 
+                            {{-- TARIF --}}
+                            <td class="px-6 py-4 font-semibold text-slate-700">
+                                Rp {{ number_format($poli->tarif, 0, ',', '.') }}
+                            </td>
+
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
 
                                     {{-- Edit --}}
-                                    <a href="{{ route('polis.edit', $poli->id) }}" class="btn btn-sm bg-amber-500 hover:bg-amber-600 
-                                                  text-white border-none rounded-lg px-4">
+                                    <a href="{{ route('admin.polis.edit', $poli->id) }}" 
+                                       class="btn btn-sm bg-amber-500 hover:bg-amber-600 text-white border-none rounded-lg px-4">
                                         <i class="fas fa-pen-to-square"></i>
                                         Edit
                                     </a>
 
                                     {{-- Delete --}}
-                                    <form action="{{ route('polis.destroy', $poli->id) }}" method="POST">
+                                    <form action="{{ route('admin.polis.destroy', $poli->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            onclick="return confirm('Yakin ingin menghapus poli ini?')" class="btn btn-sm bg-red-500 hover:bg-red-600 
-                                                       text-white border-none rounded-lg px-4">
+                                            onclick="return confirm('Yakin ingin menghapus poli ini?')" 
+                                            class="btn btn-sm bg-red-500 hover:bg-red-600 text-white border-none rounded-lg px-4">
                                             <i class="fas fa-trash"></i>
                                             Hapus
                                         </button>
@@ -78,9 +84,11 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3" class="text-center py-14 text-slate-400">
-                                <i class="fas fa-inbox text-3xl mb-3 block"></i>
-                                Belum ada data poli
+                            <td colspan="4">
+                                <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+                                    <i class="fas fa-inbox text-4xl mb-4 opacity-70"></i>
+                                    <p class="text-sm">Belum ada data poli</p>
+                                </div>
                             </td>
                         </tr>
                         @endforelse
