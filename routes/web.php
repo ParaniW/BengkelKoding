@@ -20,6 +20,8 @@ use App\Http\Controllers\Pasien\RiwayatPendaftaranController;
 
 use App\Http\Controllers\Pasien\PembayaranController as PasienPembayaranController;
 use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
+// Tambahan alias dari image_a1987e.png
+use App\Http\Controllers\Pasien\PoliController as PasienPoliController;
 
 use App\Models\Poli;
 use App\Models\Obat;
@@ -63,7 +65,6 @@ Route::middleware(['auth', 'role:admin'])
             ]);
         })->name('dashboard');
 
-        // Export Excel Admin — taruh DI ATAS resource
         Route::get('/dokter/export', [ExportController::class, 'dokter'])->name('dokter.export');
         Route::get('/pasien/export', [ExportController::class, 'pasien'])->name('pasien.export');
         Route::get('/obat/export', [ExportController::class, 'obat'])->name('obat.export');
@@ -79,6 +80,7 @@ Route::middleware(['auth', 'role:admin'])
     });
 
 // ================= DOKTER =================
+// Logika metode index, store, update, destroy diatur di JadwalPeriksaController (Ref: image_a30822.jpg)
 Route::middleware(['auth', 'role:dokter'])
     ->prefix('dokter')
     ->name('dokter.')
@@ -86,11 +88,10 @@ Route::middleware(['auth', 'role:dokter'])
 
         Route::get('/dashboard', [DokterDashboardController::class, 'index'])->name('dashboard');
 
-        // Export Excel Dokter — taruh DI ATAS route parameter
         Route::get('/jadwal-periksa/export', [ExportController::class, 'jadwalPeriksa'])->name('jadwal-periksa.export');
         Route::get('/riwayat-pasien/export', [ExportController::class, 'riwayatPasien'])->name('riwayat-pasien.export');
 
-        // Jadwal Periksa
+        // Jadwal Periksa (Resourceful routes manual sesuai image_a30822.jpg)
         Route::get('/jadwal-periksa', [JadwalPeriksaController::class, 'index'])->name('jadwal-periksa.index');
         Route::get('/jadwal-periksa/create', [JadwalPeriksaController::class, 'create'])->name('jadwal-periksa.create');
         Route::post('/jadwal-periksa', [JadwalPeriksaController::class, 'store'])->name('jadwal-periksa.store');
@@ -109,6 +110,7 @@ Route::middleware(['auth', 'role:dokter'])
     });
 
 // ================= PASIEN =================
+// Logika metode get dan submit diatur di PasienPoliController (Ref: image_a28c44.png & image_a21ba6.png)
 Route::middleware(['auth', 'role:pasien'])
     ->prefix('pasien')
     ->name('pasien.')
@@ -116,6 +118,11 @@ Route::middleware(['auth', 'role:pasien'])
 
         Route::get('/dashboard', [PasienDashboardController::class, 'index'])->name('dashboard');
 
+      
+        Route::get('/daftar', [PasienPoliController::class, 'get'])->name('daftar'); 
+        Route::post('/daftar', [PasienPoliController::class, 'submit'])->name('daftar.submit');
+
+        // Route tambahan jika masih menggunakan controller lama
         Route::get('/daftar-poli', [DaftarPoliController::class, 'create'])->name('daftar-poli.create');
         Route::post('/daftar-poli', [DaftarPoliController::class, 'store'])->name('daftar-poli.store');
 

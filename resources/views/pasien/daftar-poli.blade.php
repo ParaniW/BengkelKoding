@@ -46,8 +46,8 @@
                 <div>
     <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Rekam Medis</label>
     <input type="text"
-        {{-- Ganti $pasien jadi $user sesuai isi PoliController --}}
-        value="{{ $user->no_rm ?? '-' }}"
+        {{-- Ubah $user menjadi $pasien --}}
+        value="{{ $pasien->no_rm ?? '-' }}"
         readonly
         class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 font-mono">
 </div>

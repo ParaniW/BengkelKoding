@@ -9,25 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class JadwalPeriksaController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         $dokter = Auth::user();
-        
-        // Nama variabel $jadwals agar sinkron dengan index.blade.php
-        $jadwals = JadwalPeriksa::where('id_dokter', $dokter->id)
-                    ->orderBy('hari')
-                    ->get();
-
-        return view('dokter.jadwal-periksa.index', compact('jadwals'));
+        $jadwalPeriksas = JadwalPeriksa::where('id_dokter', $dokter->id)->orderBy('hari')->get();
+        return view('dokter.jadwal-periksa.index', compact('jadwalPeriksas'));
     }
 
-    public function create()
-    {
+    public function create(){
         return view('dokter.jadwal-periksa.create');
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $request->validate([
             'hari' => 'required',
             'jam_mulai' => 'required',
@@ -41,22 +33,17 @@ class JadwalPeriksaController extends Controller
             'jam_selesai' => $request->jam_selesai
         ]);
 
-        // Ditambahkan prefix 'dokter.'
-        return redirect()->route('dokter.jadwal-periksa.index')
+        return redirect()->route('jadwal-periksa.index')
             ->with('message', 'Data Berhasil di Simpan')
             ->with('type', 'success');
     }
 
-    public function edit($id)
-    {
-        // Nama variabel diubah jadi $jadwal agar sinkron dengan edit.blade.php
-        $jadwal = JadwalPeriksa::findOrFail($id);
-        
-        return view('dokter.jadwal-periksa.edit', compact('jadwal'));
+    public function edit($id){
+        $jadwalPeriksa = JadwalPeriksa::findOrFail($id);
+        return view('dokter.jadwal-periksa.edit', compact('jadwalPeriksa'));
     }
 
-    public function update(Request $request, string $id)
-    {
+    public function update(Request $request, string $id){
         $request->validate([
             'hari' => 'required',
             'jam_mulai' => 'required',
@@ -70,20 +57,31 @@ class JadwalPeriksaController extends Controller
             'jam_selesai' => $request->jam_selesai
         ]);
 
-        // Ditambahkan prefix 'dokter.'
-        return redirect()->route('dokter.jadwal-periksa.index')
+        return redirect()->route('jadwal-periksa.index')
             ->with('message', 'Berhasil Melakukan Update Data')
             ->with('type', 'success');
     }
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id){
         $jadwalPeriksa = JadwalPeriksa::findOrFail($id);
         $jadwalPeriksa->delete();
 
-        // Ditambahkan prefix 'dokter.'
-        return redirect()->route('dokter.jadwal-periksa.index')
+        return redirect()->route('jadwal-periksa.index')
             ->with('message', 'Berhasil Melakukan Hapus Data')
             ->with('type', 'success');
     }
+    public function get()
+    {
+    $user = Auth::user();
+    $polis = Poli::all();
+    $jadwal = JadwalPeriksa::with('dokter', 'dokter.poli')->get();
+
+    return view('pasien.daftar', [
+        'user' => $user,
+        'polis' => $polis,
+        'jadwals' => $jadwal,
+    ]);
+    }
+    
+    
 }
